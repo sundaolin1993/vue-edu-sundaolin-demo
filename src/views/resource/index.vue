@@ -2,6 +2,7 @@
   <div class="resource">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
+        <!-- form 组件 筛选区 -->
         <el-form
           :inline="true"
           ref="form"
@@ -33,21 +34,29 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handleQuery">查询搜索</el-button>
+            <el-button @click="handleResetQuery">重置查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button @click="handleResetQuery">重置搜索</el-button>
+            <el-button type="primary" @click="handleQuery" :loading="isloading"
+              >查询搜索</el-button
+            >
           </el-form-item>
           <el-form-item>
             <el-button>所有资源分类</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button>添加资源</el-button>
+            <el-button type="primary">添加资源</el-button>
           </el-form-item>
         </el-form>
       </div>
       <!-- Table 组件 -->
-      <el-table :data="tableData" height="750" border style="width: 100%">
+      <el-table
+        :data="tableData"
+        height="730"
+        border
+        style="width: 100%"
+        v-loading="isloading"
+      >
         <el-table-column prop="id" label="编号" width="100" align="center">
         </el-table-column>
         <el-table-column
@@ -84,6 +93,7 @@
         :page-size="form.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
+        :disabled="isloading"
       >
       </el-pagination>
     </el-card>
@@ -106,16 +116,19 @@ export default {
       },
       total: 0,
       tableData: [],
-      categoryIdList: []
+      categoryIdList: [],
+      isloading: false
     }
   },
   methods: {
     async handleGetResourcePages () {
+      this.isloading = true
       const { data } = await getResourcePages(this.form)
       if (data.code === '000000') {
         this.tableData = data.data.records
         this.total = data.data.total
       }
+      this.isloading = false
     },
     async handleGetAll () {
       const { data } = await getCategoryAll()
@@ -138,6 +151,8 @@ export default {
     },
     handleResetQuery () {
       this.$refs.form.resetFields()
+      this.form.current = 1
+      this.handleGetResourcePages()
     }
   },
   created () {

@@ -60,6 +60,11 @@ const routes = [
         path: '/menu/:id/edit',
         name: 'menu-edit',
         component: () => import(/* webpackChunkName:'menu-edit' */ '@/views/menu/edit')
+      }, {
+        path: '/role/:roleid/allocMenu',
+        name: 'alloc-menu',
+        props: true,
+        component: () => import(/* webpackChunkName:'alloc-menu' */ '@/views/role/alloc-menu')
       }
     ]
   }, {
