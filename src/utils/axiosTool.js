@@ -1,6 +1,6 @@
 import axios from 'axios'
 const as = axios.create({
-  timeout: 2000
+  timeout: 5000
 })
 as.interceptors.response.use(
   response => response, // 成功

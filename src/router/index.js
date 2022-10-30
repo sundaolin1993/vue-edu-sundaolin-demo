@@ -37,6 +37,10 @@ const routes = [
         name: 'course',
         component: () => import(/* webpackChunkName:'course' */ '@/views/course/index')
       }, {
+        path: '/addcourse',
+        name: 'addcourse',
+        component: () => import(/* webpackChunkName:'addcourse' */ '@/views/course/addcourse')
+      }, {
         path: '/user',
         name: 'user',
         component: () => import(/* webpackChunkName:'user' */ '@/views/user/index')
