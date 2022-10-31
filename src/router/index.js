@@ -37,9 +37,10 @@ const routes = [
         name: 'course',
         component: () => import(/* webpackChunkName:'course' */ '@/views/course/index')
       }, {
-        path: '/addcourse',
-        name: 'addcourse',
-        component: () => import(/* webpackChunkName:'addcourse' */ '@/views/course/addcourse')
+        path: '/saveOrUpdateCourse/:courseId',
+        name: 'saveOrUpdateCourse',
+        props: true,
+        component: () => import(/* webpackChunkName:'saveOrUpdateCourse' */ '@/views/course/saveOrUpdateCourse')
       }, {
         path: '/user',
         name: 'user',

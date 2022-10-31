@@ -8,6 +8,7 @@
       :on-remove="handleRemove"
       :http-request="handleUpLoad"
       :on-change="handleChange"
+      :file-list="fileListImg"
     >
       <i class="el-icon-plus"></i>
     </el-upload>
@@ -28,11 +29,14 @@ export default {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
-      isUpLoad: false
+      isUpLoad: false,
+      isLoaded: false,
+      fileListImg: []
     }
   },
   methods: {
     handleRemove () {
+      this.fileListImg = []
       this.$emit('input', '')
     },
     handlePictureCardPreview (file) {
@@ -64,6 +68,16 @@ export default {
       }
       if (fileList.length > 1) {
         fileList.splice(0, 1)
+      }
+    }
+  },
+  watch: {
+    value () {
+      if (!this.isLoaded) {
+        this.fileListImg.push({
+          url: this.value
+        })
+        this.isLoaded = true
       }
     }
   }

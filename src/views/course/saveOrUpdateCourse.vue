@@ -120,6 +120,7 @@
             <el-input
               v-model="courseForm.discounts"
               placeholder="请输入单行文本售卖价格"
+              type="number"
               clearable
               :style="{ width: '100%' }"
             >
@@ -166,8 +167,6 @@
               <el-date-picker
                 type="datetime"
                 v-model="courseForm.activityCourseDTO.beginTime"
-                format="yyyy-MM-dd HH:mm:ss"
-                value-format="yyyy-MM-dd HH:mm:ss"
                 :style="{ width: '100%' }"
                 placeholder="请选择开始时间"
                 clearable
@@ -178,8 +177,6 @@
               <el-date-picker
                 type="datetime"
                 v-model="courseForm.activityCourseDTO.endTime"
-                format="yyyy-MM-dd HH:mm:ss"
-                value-format="yyyy-MM-dd HH:mm:ss"
                 :style="{ width: '100%' }"
                 placeholder="请选择结束时间"
                 clearable
@@ -191,6 +188,7 @@
                 v-model="courseForm.activityCourseDTO.amount"
                 placeholder="请输入秒杀价"
                 clearable
+                type="number"
                 :style="{ width: '100%' }"
               >
                 <template slot="append">元</template>
@@ -207,7 +205,7 @@
         </div>
         <div v-show="activeStep === 4">
           <el-form-item>
-            <el-input type="textarea"></el-input>
+            <editor v-model="courseForm.courseDescriptionMarkDown"></editor>
           </el-form-item>
         </div>
         <el-form-item>
@@ -236,8 +234,11 @@
 
 <script>
 import courseUpload from './components/course-upload.vue'
+import editor from '@/components/editor.vue'
+import { saveOrUpdateCourse, getCourseById } from '@/services/course'
 export default {
-  name: 'addCourse',
+  name: 'saveOrUpdateCourse',
+  props: ['courseId'],
   data () {
     return {
       activeStep: 0,
@@ -249,9 +250,12 @@ export default {
         { id: 5, title: '课程详情', icon: 'el-icon-edit-outline' }
       ],
       courseForm: {
+        id: null,
         courseName: undefined,
         brief: undefined,
         teacherDTO: {
+          id: null,
+          courseId: null,
           teacherName: undefined,
           position: undefined,
           description: undefined
@@ -271,7 +275,8 @@ export default {
           endTime: '',
           amount: undefined,
           stock: 1
-        }
+        },
+        courseDescriptionMarkDown: ''
       },
       rules: {
         courseName: [{
@@ -350,9 +355,8 @@ export default {
     }
   },
   methods: {
-    submitForm () {
-      console.log(this.courseForm)
-      this.$refs.courseForm.validate((valid, options) => {
+    async submitForm () {
+      this.$refs.courseForm.validate(async (valid, options) => {
         if (!valid) {
           for (let index = 0; index < this.validList.length; index++) {
             if (this.validList[index].includes(Object.keys(options)[0])) {
@@ -363,12 +367,33 @@ export default {
           return
         }
         // 提交表单
-        console.log(this.courseForm)
+        const { data } = await saveOrUpdateCourse(this.courseForm)
+        if (data.code === '000000') {
+          this.$message.success(data.mesg)
+          this.$router.push({ name: 'course' })
+        }
       })
     }
   },
   components: {
-    courseUpload
+    courseUpload,
+    editor
+  },
+  async created () {
+    if (this.courseId) {
+      const { data } = await getCourseById(this.courseId)
+      if (data.code === '000000') {
+        this.courseForm = data.data
+        if (!this.courseForm.activityCourse) {
+          this.courseForm.activityCourseDTO = {
+            beginTime: '',
+            endTime: '',
+            amount: undefined,
+            stock: 1
+          }
+        }
+      }
+    }
   }
 }
 </script>

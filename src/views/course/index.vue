@@ -22,7 +22,7 @@
           <el-form-item style="float: right">
             <el-button
               type="primary"
-              @click="$router.push({ name: 'addcourse' })"
+              @click="$router.push({ name: 'saveOrUpdateCourse' })"
               >添加课程+</el-button
             >
           </el-form-item>
@@ -60,7 +60,15 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="200" align="center">
           <template v-slot="scope">
-            <el-button type="text" size="small" @click="allocRole(scope.row)"
+            <el-button
+              type="text"
+              size="small"
+              @click="
+                $router.push({
+                  name: 'saveOrUpdateCourse',
+                  params: { courseId: scope.row.id },
+                })
+              "
               >编辑</el-button
             >
             <el-button type="text" size="small" @click="allocRole(scope.row)"

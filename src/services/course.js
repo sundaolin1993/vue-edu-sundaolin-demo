@@ -28,3 +28,23 @@ export const uploadImage = (data, onUploadProgress) => {
     timeout: 1000 * 60 * 5
   })
 }
+
+// 保存或更改课程信息
+export const saveOrUpdateCourse = data => {
+  return request({
+    method: 'POST',
+    url: '/boss/course/saveOrUpdateCourse',
+    data
+  })
+}
+
+// 通过课程Id获取课程信息
+export const getCourseById = courseId => {
+  return request({
+    method: 'GET',
+    url: '/boss/course/getCourseById',
+    params: {
+      courseId
+    }
+  })
+}
